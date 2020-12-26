@@ -10,3 +10,6 @@ Location Quoetient formula: LQ = (xi/yi) / (Xi/Yi)
 
 LQ Algorithm requires a vector layer (any geometry) and two fields as x, y variables. It calculates the LQ index and 
 adds the index for each feature in the attribute table.
+
+For further explanation in LQ, you can check:
+https://www.geoib.com/location-quotients.html
