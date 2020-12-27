@@ -1,6 +1,6 @@
 """
 ***************************************************************************
-    MoransIAlgorithm.py
+    LocationQuotient.py
     ---------------------
     Author                      : Parmenion Delialis
     Date                         : December 2020
@@ -28,13 +28,12 @@ class LocationQuotientAlgorithm(QgsProcessingAlgorithm):
     LQFIELD = 'LQFIELD'
     LQLAYER = 'LQLAYER'
     
-    QgsProcessing
     def initAlgorithm(self, config=None):
         self.addParameter(QgsProcessingParameterVectorLayer(self.LAYER, 'Layer', types=[QgsProcessing.TypeVectorAnyGeometry], defaultValue=None))
         self.addParameter(QgsProcessingParameterField(self.VARIABLEX, 'Variable X', type=QgsProcessingParameterField.Numeric, parentLayerParameterName=self.LAYER))
         self.addParameter(QgsProcessingParameterField(self.VARIABLEY, 'Variable Y', type=QgsProcessingParameterField.Numeric, parentLayerParameterName=self.LAYER))
         self.addParameter(QgsProcessingParameterString(self.LQFIELD, 'Name for LQ Field ', defaultValue = 'LQ'))
-        self.addParameter(QgsProcessingParameterFeatureSink(self.LQLAYER, 'Output', createByDefault=True, supportsAppend=False, defaultValue=None))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.LQLAYER, 'Output', createByDefault=True, defaultValue=None))
 
     def processAlgorithm(self, parameters, context, model_feedback):
         results = {}
@@ -48,9 +47,9 @@ class LocationQuotientAlgorithm(QgsProcessingAlgorithm):
 
         # Add ID
         try:
-        	layer = processing.run("native:fieldcalculator", {'INPUT': layer, 'FIELD_NAME': 'LQ_FID','FIELD_TYPE': 1, 'FIELD_LENGTH': 10, 'FIELD_PRECISION': 0, 'FORMULA': '$id', 'OUTPUT': 'memory:'})['OUTPUT']
+            layer = processing.run("native:fieldcalculator", {'INPUT': layer, 'FIELD_NAME': 'LQ_FID','FIELD_TYPE': 1, 'FIELD_LENGTH': 10, 'FIELD_PRECISION': 0, 'FORMULA': '$id+1', 'OUTPUT': 'memory:'})['OUTPUT']
         except:
-        	layer = processing.run("qgis:fieldcalculator", {'INPUT': layer, 'FIELD_NAME': 'LQ_FID','FIELD_TYPE': 1, 'FIELD_LENGTH': 10, 'FIELD_PRECISION': 0, 'FORMULA': '$id', 'OUTPUT': 'memory:'})['OUTPUT']
+            layer = processing.run("qgis:fieldcalculator", {'INPUT': layer, 'FIELD_NAME': 'LQ_FID','FIELD_TYPE': 1, 'FIELD_LENGTH': 10, 'FIELD_PRECISION': 0, 'FORMULA': '$id+1', 'OUTPUT': 'memory:'})['OUTPUT']
 
         # Creating new field for LQ
         flds = layer.fields()
@@ -90,6 +89,12 @@ class LocationQuotientAlgorithm(QgsProcessingAlgorithm):
 
     def displayName(self):
         return 'Location Quotient'
+
+    def group(self):
+        return 'Spatial Analysis'
+
+    def groupId(self):
+        return 'spatialanalysis'
         
     def shortHelpString(self):
         return ("Location Quotient")
